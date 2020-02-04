@@ -1,76 +1,145 @@
-/**
- * Stores the list of kittens
- * @type {Kitten[]}
- */
 let kittens = [];
-/**
- * Called when submitting the new Kitten Form
- * This method will pull data from the form
- * use the provided function to give the data an id
- * you can use robohash for images
- * https://robohash.org/<INSERTCATNAMEHERE>?set=set4
- * then add that data to the kittens list.
- * Then reset the form
- */
-function addKitten(event) {}
 
-/**
- * Converts the kittens array to a JSON string then
- * Saves the string to localstorage at the key kittens
- */
-function saveKittens() {}
+function addKitten(event) {
+  event.preventDefault();
 
-/**
- * Attempts to retrieve the kittens string from localstorage
- * then parses the JSON string into an array. Finally sets
- * the kittens array to the retrieved array
- */
-function loadKittens() {}
+  let form = event.target;
+  let kittenName = form.name.value;
+  let kittenId = generateId();
+  let kitten = kittens.find(kitten => kitten.name == kittenName);
 
-/**
- * Draw all of the kittens to the kittens element
- */
-function drawKittens() {}
+  if (kitten) {
+    alert("This kitten already exists!");
+  } else {
+    kitten = {
+      id: kittenId,
+      // @ts-ignore
+      image: "https://robohash.org/" + "kittenName" + "?set=set4",
+      name: kittenName,
+      mood: "tolerant",
+      affection: 5
+    };
+    kittens.push(kitten);
+    saveKittens();
+  }
+  form.reset();
+  drawKittens();
+}
 
-/**
- * Find the kitten in the array by its id
- * @param {string} id
- * @return {Kitten}
- */
+function saveKittens() {
+  window.localStorage.setItem("kittens", JSON.stringify(kittens));
+  drawKittens();
+}
+
+function loadKittens() {
+  let kittensData = JSON.parse(window.localStorage.getItem("kittens"));
+  if (kittensData) {
+    kittens = kittensData;
+  }
+  drawKittens();
+}
+
+function drawKittens() {
+  let kittensElem = document.getElementById("kittens");
+  let kittenTemplate = "";
+
+  kittens.forEach(kitten => {
+    if (kitten.mood == "ran away") {
+      kittenTemplate += `
+        <div id = "goneKitten" class="d-flex space-around kitten gone litter-box m-2">
+        < img src = "${kitten.image}" class="kitten gone m-1" alt = "kitten image" height = "125" >
+          <div>
+          <h1><span>${kitten.name}</span></h1>
+          <p>Leave Me Alone!</p>
+          </div>
+        </div>`;
+    } else if (kitten.mood == "tolerant") {
+      kittenTemplate += `
+      <div id="tolerantKitten" class="d-flex space around kitten tolerant m-2">
+        <img src = "${kitten.image}" class="kitten tolerant m-1" alt="kitten image" height="125" >
+        <div>
+          <h1><span>${kitten.name}</span></h1>
+          <p>Mood: <span>${kitten.mood}</span></p>
+          <p>Affection: <span>${kitten.affection}</span></p>
+          <button onclick="pet('${kitten.id}')">Pet</button>
+          <button onclick="catnip('${kitten.id}')">CatNip</button>
+        </div>
+      </div>`;
+    } else if (kitten.mood == "happy") {
+      kittenTemplate += `
+      <div id="happykitten" class="d-flex space-around kitten happy m-2">
+        <img src="${kitten.image}" class="kitten happy m-1" alt="kitten image" height="125">
+        <div>
+          <h1><span>${kitten.name}</span></h1>
+          <p>Mood: <span>${kitten.mood}</span></p>
+          <p>Affection: <span>${kitten.affection}</span></p>
+          <button onclick="pet('${kitten.id}')">Pet</button>
+          <button onclick="catnip('${kitten.id}')">CatNip</button>
+        </div>
+      </div>`;
+    } else {
+      kittenTemplate += `
+      <div id="angrykitten" class="d-flex space-around kitten angry m-2">
+        <img src="${kitten.image}" class="kitten angry m-1" alt="kitten image" height="125">
+        <div>
+          <h1><span>${kitten.name}</span></h1>
+          <p>Mood: <span>${kitten.mood}</span></p>
+          <p>Affection: <span>${kitten.affection}</span></p>
+          <button onclick="pet('${kitten.id}')">Pet</button>
+          <button onclick="catnip('${kitten.id}')">CatNip</button>
+        </div>
+      </div>`;
+    }
+  });
+  kittensElem.innerHTML = kittenTemplate;
+}
+
 function findKittenById(id) {
   return kittens.find(k => k.id == id);
 }
 
-/**
- * Find the kitten in the array of kittens
- * Generate a random Number
- * if the number is greater than .7
- * increase the kittens affection
- * otherwise decrease the affection
- * save the kittens
- * @param {string} id
- */
-function pet(id) {}
+function pet(id) {
+  let currentKitten = findKittenById(id);
+  let randomNum = Math.random();
 
-/**
- * Find the kitten in the array of kittens
- * Set the kitten's mood to tolerant
- * Set the kitten's affection to 5
- * save the kittens
- * @param {string} id
- */
-function catnip(id) {}
+  if (randomNum > 0.7) {
+    currentKitten.affection++;
+  } else {
+    currentKitten.affection--;
+  }
 
-/**
- * Sets the kittens mood based on its affection
- * Happy > 6, Tolerant <= 5, Angry <= 3, Gone <= 0
- * @param {Kitten} kitten
- */
-function setKittenMood(kitten) {}
+  currentKitten.mood = setKittenMood(currentKitten);
+
+  saveKittens();
+  drawKittens();
+}
+
+function catnip(id) {
+  let currentKitten = findKittenById(id);
+  currentKitten.affection = 5;
+  currentKitten.mood = "tolerant";
+
+  saveKittens();
+  drawKittens();
+}
+
+function setKittenMood(currentKitten) {
+  if (currentKitten.affection == 0) {
+    currentKitten.mood = "run away";
+  } else if (currentKitten.affection <= 3) {
+    currentKitten.mood = "angry";
+  } else if (currentKitten.affection <= 5) {
+    currentKitten.mood = "tolerant";
+  } else {
+    currentKitten.mood = "happy";
+  }
+  return currentKitten.mood;
+}
 
 function getStarted() {
   document.getElementById("welcome").remove();
-  drawKittens();
+  document.getElementById("addKittenBar").classList.remove("hidden");
+  loadKittens();
 }
 
 /**
@@ -78,11 +147,6 @@ function getStarted() {
  * @typedef {{id: string, name: string, mood: string, affection: number}} Kitten
  */
 
-/**
- * Used to generate a random string id for mocked
- * database generated Id
- * @returns {string}
- */
 function generateId() {
   return (
     Math.floor(Math.random() * 10000000) +

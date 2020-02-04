@@ -13,7 +13,7 @@
 
 <body>
   <header class="bg-dark d-flex align-items-center p-1 space-between">
-    <img src="moody-logo.png" height="60" alt="Moody Kittens">
+    <img src="moody-logo.png" height="60" alt="Moody Kittens" onclick="window.location.reload()">
     <form class="" onsubmit="addKitten(event)">
       <div class="d-flex">
         <input placeholder="Name" type="text" name="name" />
@@ -23,16 +23,17 @@
       </div>
     </form>
   </header>
+
   <main class="container">
     <div id="welcome" class="d-flex justify-content-center">
       <div class="card p-2 text-center w-50">
         <img src="moody-logo.png" height="250" alt="Moody Kittens">
         <div class="mt-2">
-          <b class="text-center">Hello Student</b>
-          <p>This is your starter template only feel free to modify the look as you tackle the challenges that we have laid out.</p>
+          <b class="text-center">Are you a cat person?!</b>
+          <p>Collect cats and take care of them as best as you can. Be sure not to scare them away!</p>
           <small>Good Luck and Have Fun!</small>
           <br>
-          <button onclick="getStarted()">Get Started</button>
+          <button onclick= getStarted()>Create a kitten!</button>
         </div>
       </div>
     </div>
@@ -40,8 +41,9 @@
       <div id="kittens" class="d-flex align-items-center flex-wrap">
       </div>
   </main>
+
   <footer class="card bg-dark text-light p-2 d-flex align-items-center justify-content-center">
-    <small>Created with <span style="color: var(--primary)">&hearts;</span> by CodeWorks</small>
+    <small>Created with <span style="color: var(--primary)">&hearts;</span> by Bryce Dinger</small>
   </footer>
 
   <script src="app.js"></script>
