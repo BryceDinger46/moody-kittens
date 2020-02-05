@@ -16,8 +16,8 @@ function addKitten(event) {
       // @ts-ignore
       image: "https://robohash.org/" + "kittenName" + "?set=set4",
       name: kittenName,
-      mood: "tolerant",
-      affection: 5
+      mood: "happy",
+      affection: 6
     };
     kittens.push(kitten);
     saveKittens();
@@ -39,6 +39,13 @@ function loadKittens() {
   drawKittens();
 }
 
+function clearKittens() {
+  if ((kittens = [])) {
+    document.getElementById("clearKittens").classList.add("hidden");
+  }
+  window.localStorage.clear();
+}
+
 function drawKittens() {
   let kittensElem = document.getElementById("kittens");
   let kittenTemplate = "";
@@ -47,10 +54,10 @@ function drawKittens() {
     if (kitten.mood == "ran away") {
       kittenTemplate += `
         <div id = "goneKitten" class="d-flex space-around kitten gone litter-box m-2">
-        < img src = "${kitten.image}" class="kitten gone m-1" alt = "kitten image" height = "125" >
+        < img src = "${kitten.image}" height = "125" alt = "kitten image"  class="kitten ${kitten.mood}>
           <div>
           <h1><span>${kitten.name}</span></h1>
-          <p>Leave Me Alone!</p>
+          <p><span>Leave Me Alone!</span></p>
           </div>
         </div>`;
     } else if (kitten.mood == "tolerant") {
